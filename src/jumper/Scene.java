@@ -24,9 +24,31 @@ import java.util.ArrayList;
 
 public class Scene extends Canvas implements KeyListener, Runnable {
     
+    private User user;
+    private Enemy enemy;
+    
     private boolean[] keys;
+    private BufferedImage back;
     
+    public Scene(){
+        setBackground(Color.black);
+
+        keys = new boolean[5];
+        
+        this.addKeyListener(this);
+        new Thread(this).start();
+
+        setVisible(true);
+        
+    }
     
+    public void update(Graphics window) {
+        paint(window);
+    }
+    
+    public void paint(Graphics window) {
+    
+    }
     
     
     public void keyPressed(KeyEvent e) {

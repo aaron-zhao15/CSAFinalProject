@@ -5,12 +5,15 @@
  */
 package jumper;
 
+import java.awt.Color;
+
 /**
  *
  * @author XingLu
  */
 public abstract class Block implements Locatable{
     private int xPos, yPos, width, height;
+    private Color color;
     
     public Block(){
         this(0, 0);
@@ -21,10 +24,15 @@ public abstract class Block implements Locatable{
     }
     
     public Block(int x, int y, int w, int h){
+        this(x, y, w, h, Color.BLACK);
+    }
+    
+    public Block(int x, int y, int w, int h, Color c){
         xPos = x;
         yPos = y;
         width = w;
         height = h;
+        color = c;
     }
 
     /**
@@ -83,5 +91,11 @@ public abstract class Block implements Locatable{
         this.height = height;
     }
     
+    public Color getColor(){
+        return color;
+    }
     
+    public void setColor(Color c){
+        color = c;
+    }
 }

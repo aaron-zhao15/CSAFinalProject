@@ -86,7 +86,7 @@ public class Enemy extends MovingThing {
     }
 
     public String toString() {
-        return super.toString() + getXSpeed();
+        return super.toString() + " " + getXSpeed();
     }
     
 }

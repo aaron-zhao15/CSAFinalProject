@@ -76,6 +76,12 @@ public class User extends MovingThing{
             case "RIGHT":
                 setX(getX() + getXSpeed());
                 break;
+            case "UP":
+                setY(getY() - getYSpeed());
+                break;
+            case "DOWN":
+                setY(getY() + getYSpeed());
+                break;
         }
     }
 
@@ -100,6 +106,6 @@ public class User extends MovingThing{
     }
 
     public String toString() {
-        return super.toString() + getXSpeed();
+        return super.toString() + " " + getXSpeed() + " " + getYSpeed();
     }
 }

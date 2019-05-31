@@ -33,6 +33,10 @@ public class Enemy extends MovingThing {
     public Enemy(int x, int y, int s) {
         this(x, y, 30, 30, s);
     }
+    
+    public Enemy(int x, int y, int w, int h){
+        this(x, y, w, h, 0);
+    }
 
     public Enemy(int x, int y, int w, int h, int s) {
         super(x, y, w, h);

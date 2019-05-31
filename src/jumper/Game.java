@@ -15,8 +15,8 @@ import static javax.swing.JFrame.EXIT_ON_CLOSE;
  */
 public class Game extends JFrame{
     
-    private static final int WIDTH = 800;
-    private static final int HEIGHT = 600;
+    private static final int WIDTH = 1280;
+    private static final int HEIGHT = 1000;
     
     public Game(){
         super("JUMPER");

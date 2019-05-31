@@ -19,18 +19,22 @@ public class Ground extends Block {
     
     public Ground(){
         super();
+        boundary = boundaries[0];
     }
     
     public Ground(int x, int y){
         super(x, y);
+        boundary = boundaries[0];
     }
     
     public Ground(int x, int y, int w, int h){
         super(x, y, w, h);
+        boundary = boundaries[0];
     }
     
     public Ground(int x, int y, int w, int h, Color c){
         super(x, y, w, h, c);
+        boundary = boundaries[0];
     }
     
     public Ground(int x, int y, int w, int h, Color c, int bound){
@@ -42,4 +46,6 @@ public class Ground extends Block {
         super.setX(x);
         super.setY(y);
     }
+    
+    
 }

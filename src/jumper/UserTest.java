@@ -18,7 +18,7 @@ public class UserTest {
         User test2 = new User(50, 75);
         System.out.println("User 2 " + test2);
 
-        User test3 = new User(7, 7, 6, 5, 1, 1);
+        User test3 = new User(7, 7, 6, 5, 1, 1, 5);
         test3.setX(3);
         test3.setY(5);
         System.out.println("User 3 " + test2);

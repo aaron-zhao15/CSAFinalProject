@@ -42,7 +42,18 @@ public class Enemy extends MovingThing {
         super(x, y, w, h);
         xSpeed = s;
         try {
-            URL url = getClass().getResource("/images/wario.jpg");
+            URL url = getClass().getResource("/images/wario.png");
+            image = ImageIO.read(url);
+        } catch (Exception e) {
+
+        }
+    }
+    
+    public Enemy(int x, int y, int w, int h, int s, String string) {
+        super(x, y, w, h);
+        xSpeed = s;
+        try {
+            URL url = getClass().getResource(string);
             image = ImageIO.read(url);
         } catch (Exception e) {
 

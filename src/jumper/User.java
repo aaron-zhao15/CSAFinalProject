@@ -17,6 +17,7 @@ import javax.imageio.ImageIO;
 public class User extends MovingThing{
     private int xSpeed;
     private int jSpeed;
+    private int fSpeed;
     private Image image;
     private boolean alive;
     private int activeDirection = (int)Math.round((Math.random()*2)-1);
@@ -31,15 +32,16 @@ public class User extends MovingThing{
     }
 
     public User(int x, int y, int xs, int js) {
-        this(x, y, 30, 30, xs, js);
+        this(x, y, 30, 30, xs, js, 5);
     }
 
-    public User(int x, int y, int w, int h, int xs, int js) {
+    public User(int x, int y, int w, int h, int xs, int js, int fs) {
         super(x, y, w, h);
         xSpeed = xs;
         jSpeed = js;
+        fSpeed = fs;
         try {
-            URL url = getClass().getResource("/images/mario.jpg");
+            URL url = getClass().getResource("/images/mario.png");
             image = ImageIO.read(url);
         } catch (Exception e) {
 
@@ -66,6 +68,14 @@ public class User extends MovingThing{
     public int getJSpeed() {
         return jSpeed;
     }
+    
+    public void setFSpeed(int fs) {
+        fSpeed = fs;
+    }
+    
+    public int getFSpeed(){
+        return fSpeed;
+    }
 
     public void move(String direction) {
         String temp = direction.toUpperCase();
@@ -80,7 +90,7 @@ public class User extends MovingThing{
                 setY(getY() - getJSpeed());
                 break;
             case "DOWN":
-                setY(getY() + getJSpeed());
+                setY(getY() + getFSpeed());
                 break;
         }
     }

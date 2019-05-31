@@ -29,11 +29,23 @@ import javax.imageio.ImageIO;
 public class Scene extends Canvas implements KeyListener, Runnable {
     
     private User user;
-    private Enemy enemy;
+    private Enemy enemy1;
     private ArrayList<Ground> grounds;
+    
+    private File data;
+    
+    private int startXPos;
+    private int startYPos;
     
     private int score;
     private int accel;
+    private int lives;
+    
+    private int posStart;
+    private int posOffset;
+    
+    private int timeStart;
+    private int timeElapsed;
     
     private Image backgroundImg;
     
@@ -46,9 +58,19 @@ public class Scene extends Canvas implements KeyListener, Runnable {
         keys = new boolean[5];
         
         accel = 10;
+        timeElapsed = 0;
+        timeStart = -1;
+        score = 0;
+        lives = 3;
         
-        user = new User(300, 400, 50, 50, 10, 10);
-        enemy = new Enemy(300, 200, 50, 50);
+        startXPos = 640;
+        startYPos = 700;
+        
+        user = new User(300, 400, 50, 50, 10, 10, 10);
+        enemy1 = new Enemy(300, 350, 50, 50, 3);
+        
+        posStart = enemy1.getX();
+        posOffset = 0;
         
         grounds = new ArrayList<Ground>();
         
@@ -61,6 +83,8 @@ public class Scene extends Canvas implements KeyListener, Runnable {
             backgroundImg = ImageIO.read(url);
         } catch (Exception e) {
         }
+        
+        data = new File("newfile");
         
         this.addKeyListener(this);
         new Thread(this).start();
@@ -91,27 +115,47 @@ public class Scene extends Canvas implements KeyListener, Runnable {
         graphToBack.setColor(Color.WHITE);
         graphToBack.drawString("Score " + score, 300, 50);
         
+        graphToBack.setColor(Color.RED);
+        graphToBack.drawString("Lives " + lives, 500, 50);
+        
         for(Ground ground : grounds){
             graphToBack.setColor(ground.getColor());
             graphToBack.fillRect(ground.getX(), ground.getY(), ground.getWidth(), ground.getHeight());
-            
-            
         }
         
-        Ground ground = grounds.get(0);
         
-        if((user.getY()+user.getHeight() <= ground.getY() + 10) 
-                    && (user.getY()+user.getHeight() >= ground.getY())
-                    && (user.getX()+user.getWidth() >= user.getX())
-                    && (user.getX() <= ground.getX() + ground.getWidth())){
+        for(Ground ground : grounds){
+            if((user.getY()+user.getHeight() <= ground.getY() + 10) 
+                        && (user.getY()+user.getHeight() >= ground.getY())
+                        && (user.getX()+user.getWidth() >= ground.getX())
+                        && (user.getX() <= ground.getX() + ground.getWidth())){
                 user.setY(ground.getY()-user.getHeight());
+            }
+            
+
+//            if(!((user.getY()+user.getHeight() <= ground.getY() + 10) 
+//                        && (user.getY()+user.getHeight() >= ground.getY())
+//                        && (user.getX()+user.getWidth() >= user.getX())
+//                        && (user.getX() <= ground.getX() + ground.getWidth()))
+//                    && !keys[2]){
+//                user.move("DOWN");
+//            }
+        }
+        
+        timeElapsed++;
+        
+        Ground ground1 = grounds.get(1);
+        enemy1.move("RIGHT");
+        if(enemy1.getX() <= ground1.getX()
+                || enemy1.getX()+enemy1.getWidth() >= ground1.getX()+ground1.getWidth()){
+            enemy1.setXSpeed(-enemy1.getXSpeed());
         }
         
         
         
-        
-        
-        
+        if(!keys[2]){
+            user.move("DOWN");
+        }
         
         if (keys[0] == true) {
             user.move("LEFT");
@@ -120,14 +164,25 @@ public class Scene extends Canvas implements KeyListener, Runnable {
             user.move("RIGHT");
         }
         if (keys[2] == true) {
+            if(timeStart == -1){
+                timeStart = timeElapsed;
+            }
             user.move("UP");
+            if(timeElapsed > timeStart + 50){
+                keys[2] = false;
+                timeStart = -2;
+            }
         }
         if (keys[3] == true) {
             user.move("DOWN");
         }
         
+        if(timeStart == -2){
+            timeStart = -1;
+        }
+        
         user.draw(graphToBack);
-        enemy.draw(graphToBack);
+        enemy1.draw(graphToBack);
         
         twoDGraph.drawImage(back, null, 0, 0);
     }

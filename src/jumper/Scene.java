@@ -33,9 +33,13 @@ public class Scene extends Canvas implements KeyListener, Runnable {
 //    private Enemy enemy1;
 //    private Enemy enemy2;
     
+    public boolean win;
+    
     private ArrayList<Ground> grounds;
     
     private File data;
+    
+    private String name;
     
     private int startXPos;
     private int startYPos;
@@ -60,7 +64,7 @@ public class Scene extends Canvas implements KeyListener, Runnable {
     public Scene(){
         setBackground(Color.black);
 
-        
+        name = "";
         
         keys = new boolean[5];
         
@@ -69,6 +73,8 @@ public class Scene extends Canvas implements KeyListener, Runnable {
         timeStart = -1;
         score = 0;
         lives = 3;
+        
+        win = false;
         
         startXPos = 640;
         startYPos = 700;
@@ -127,6 +133,9 @@ public class Scene extends Canvas implements KeyListener, Runnable {
         
         graphToBack.setColor(Color.BLUE);
         graphToBack.drawString("Jumper ", 25, 50);
+        
+        graphToBack.setColor(Color.WHITE);
+        graphToBack.drawString("User: " + name, SIZE, SIZE);
         
         graphToBack.setColor(Color.WHITE);
         graphToBack.drawString("Score " + score, 300, 50);
@@ -218,7 +227,7 @@ public class Scene extends Canvas implements KeyListener, Runnable {
         
         if(!user.getAlive()){
             try{
-                Thread.sleep(50);
+                Thread.sleep(500);
             }catch(Exception e){
                 
             }
@@ -231,7 +240,7 @@ public class Scene extends Canvas implements KeyListener, Runnable {
         
         if(lives == 0){
             graphToBack.clearRect(0, 0, 1280, 1000);
-            enemies.clear();
+            //enemies.clear();
             user.setAlive(false);
             backgroundImg = loseScreen;
             graphToBack.drawImage(backgroundImg, 0, 0, null);
@@ -250,7 +259,7 @@ public class Scene extends Canvas implements KeyListener, Runnable {
         }
         else if (enemies.isEmpty()){
             graphToBack.clearRect(0, 0, 1280, 1000);
-            enemies.clear();
+            //enemies.clear();
             //user.setAlive(false);
             backgroundImg = winScreen;
             graphToBack.drawImage(backgroundImg, 0, 0, null);
@@ -270,6 +279,7 @@ public class Scene extends Canvas implements KeyListener, Runnable {
             if(user.getY() + user.getHeight() <= enemy.getY() + 5 && user.getY() + user.getHeight() >= enemy.getY() - 5
                     && user.isFalling()){
                 enemy.setAlive(false);
+                score += 100;
             }
         }
         else {
@@ -282,10 +292,18 @@ public class Scene extends Canvas implements KeyListener, Runnable {
             if(user.getY() <= enemy.getY() + enemy.getHeight()
                     && user.getY() >= enemy.getY()){
                 user.setAlive(false);
+                score = 0;
             }
         }
         else {
         }
+    }
+    
+    public void setName(String n){
+        name = n;
+    }
+    public String getName(){
+        return name;
     }
     
     

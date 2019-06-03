@@ -39,14 +39,8 @@ public class Enemy extends MovingThing {
     }
 
     public Enemy(int x, int y, int w, int h, int s) {
-        super(x, y, w, h);
-        xSpeed = s;
-        try {
-            URL url = getClass().getResource("/images/wario.png");
-            image = ImageIO.read(url);
-        } catch (Exception e) {
-
-        }
+        this(x, y, w, h, s, "/images/wario.png");
+        
     }
     
     public Enemy(int x, int y, int w, int h, int s, String string) {
@@ -58,6 +52,7 @@ public class Enemy extends MovingThing {
         } catch (Exception e) {
 
         }
+        alive = true;
     }
 
     public void setXSpeed(int xs) {

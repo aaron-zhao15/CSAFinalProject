@@ -29,7 +29,10 @@ import javax.imageio.ImageIO;
 public class Scene extends Canvas implements KeyListener, Runnable {
     
     private User user;
-    private Enemy enemy1;
+    private ArrayList<Enemy> enemies;
+//    private Enemy enemy1;
+//    private Enemy enemy2;
+    
     private ArrayList<Ground> grounds;
     
     private File data;
@@ -48,6 +51,8 @@ public class Scene extends Canvas implements KeyListener, Runnable {
     private int timeElapsed;
     
     private Image backgroundImg;
+    private Image loseScreen;
+    private Image winScreen;
     
     private boolean[] keys;
     private BufferedImage back;
@@ -55,6 +60,8 @@ public class Scene extends Canvas implements KeyListener, Runnable {
     public Scene(){
         setBackground(Color.black);
 
+        
+        
         keys = new boolean[5];
         
         accel = 10;
@@ -66,25 +73,34 @@ public class Scene extends Canvas implements KeyListener, Runnable {
         startXPos = 640;
         startYPos = 700;
         
-        user = new User(300, 400, 50, 50, 10, 10, 10);
-        enemy1 = new Enemy(300, 350, 50, 50, 3);
+        user = new User(startXPos, startYPos, 50, 50, 5, 10, 10);
         
-        posStart = enemy1.getX();
-        posOffset = 0;
+        enemies = new ArrayList<Enemy>();
+        enemies.add(new Enemy(300, 350, 50, 50, 3, "/images/wario.png"));
+        enemies.add(new Enemy(700, 350, 50, 50, 3, "/images/waluigi.png"));
+        
+//        enemy1 = new Enemy(300, 350, 50, 50, 3, "/images/wario.png");
+//        enemy2 = new Enemy(700, 350, 50, 50, 3, "/images/waluigi.png");
+        
         
         grounds = new ArrayList<Ground>();
         
         grounds.add(new Ground(0, 800, 1280, 200, Color.GREEN));
-        grounds.add(new Ground(200, 400, 200, 10, Color.GREEN));
-        grounds.add(new Ground(600, 400, 200, 10, Color.GREEN));
+        grounds.add(new Ground(200, 400, 200, 20, Color.GREEN));
+        grounds.add(new Ground(600, 400, 200, 20, Color.GREEN));
         
         try {
             URL url = getClass().getResource("/images/background.jpg");
             backgroundImg = ImageIO.read(url);
+            URL url2 = getClass().getResource("/images/gameover.png");
+            loseScreen = ImageIO.read(url2);
+            URL url3 = getClass().getResource("/images/winscreen.jpg");
+            winScreen = ImageIO.read(url3);
         } catch (Exception e) {
         }
         
         data = new File("newfile");
+        
         
         this.addKeyListener(this);
         new Thread(this).start();
@@ -145,10 +161,22 @@ public class Scene extends Canvas implements KeyListener, Runnable {
         timeElapsed++;
         
         Ground ground1 = grounds.get(1);
-        enemy1.move("RIGHT");
-        if(enemy1.getX() <= ground1.getX()
-                || enemy1.getX()+enemy1.getWidth() >= ground1.getX()+ground1.getWidth()){
-            enemy1.setXSpeed(-enemy1.getXSpeed());
+        
+        if(enemies.size() > 0){
+            enemies.get(0).move("RIGHT");
+            if(enemies.get(0).getX() <= ground1.getX()
+                    || enemies.get(0).getX()+enemies.get(0).getWidth() >= ground1.getX()+ground1.getWidth()){
+                enemies.get(0).setXSpeed(-enemies.get(0).getXSpeed());
+            }
+        }
+        
+        if(enemies.size() > 1){
+            Ground ground2 = grounds.get(2);
+            enemies.get(1).move("RIGHT");
+            if(enemies.get(1).getX() <= ground2.getX()
+                    || enemies.get(1).getX()+enemies.get(1).getWidth() >= ground2.getX()+ground2.getWidth()){
+                enemies.get(1).setXSpeed(-enemies.get(1).getXSpeed());
+            }
         }
         
         
@@ -157,13 +185,13 @@ public class Scene extends Canvas implements KeyListener, Runnable {
             user.move("DOWN");
         }
         
-        if (keys[0] == true) {
+        if (keys[0]) {
             user.move("LEFT");
         }
-        if (keys[1] == true) {
+        if (keys[1]) {
             user.move("RIGHT");
         }
-        if (keys[2] == true) {
+        if (keys[2]) {
             if(timeStart == -1){
                 timeStart = timeElapsed;
             }
@@ -173,7 +201,7 @@ public class Scene extends Canvas implements KeyListener, Runnable {
                 timeStart = -2;
             }
         }
-        if (keys[3] == true) {
+        if (keys[3]) {
             user.move("DOWN");
         }
         
@@ -181,10 +209,83 @@ public class Scene extends Canvas implements KeyListener, Runnable {
             timeStart = -1;
         }
         
-        user.draw(graphToBack);
-        enemy1.draw(graphToBack);
+        for(Enemy e : enemies){
+            checkEnemy(e);
+            checkPlayer(e);
+            
+        }
+        
+        
+        if(!user.getAlive()){
+            try{
+                Thread.sleep(50);
+            }catch(Exception e){
+                
+            }
+            if(lives > 0){
+                lives--;
+                user.setAlive(true);
+                user.setPos(startXPos, startYPos);
+            }
+        }
+        
+        if(lives == 0){
+            graphToBack.clearRect(0, 0, 1280, 1000);
+            enemies.clear();
+            user.setAlive(false);
+            backgroundImg = loseScreen;
+            graphToBack.drawImage(backgroundImg, 0, 0, null);
+        }
+        
+        for(int i = 0; i < enemies.size(); i++){
+            if(!enemies.get(i).getAlive()){
+                enemies.remove(i);
+            }
+        }
+
+        if(!enemies.isEmpty()){
+            for(Enemy e: enemies){
+                e.draw(graphToBack);
+            }
+        }
+        else if (enemies.isEmpty()){
+            graphToBack.clearRect(0, 0, 1280, 1000);
+            enemies.clear();
+            //user.setAlive(false);
+            backgroundImg = winScreen;
+            graphToBack.drawImage(backgroundImg, 0, 0, null);
+        }
+        
+        if(user.getAlive()){
+            user.draw(graphToBack);
+        }
         
         twoDGraph.drawImage(back, null, 0, 0);
+    }
+    
+    
+    public void checkEnemy(Enemy enemy){
+        if(user.getX() <= enemy.getX() + enemy.getWidth() && user.getX() >= enemy.getX()
+                || user.getX() + user.getWidth() >= enemy.getX() && user.getX() + user.getWidth() <= enemy.getX() + enemy.getWidth()){
+            if(user.getY() + user.getHeight() <= enemy.getY() + 5 && user.getY() + user.getHeight() >= enemy.getY() - 5
+                    && user.isFalling()){
+                enemy.setAlive(false);
+            }
+        }
+        else {
+        }
+    }
+    
+    public void checkPlayer(Enemy enemy){
+        if(user.getX() <= enemy.getX() + enemy.getWidth() && user.getX() >= enemy.getX()
+                || user.getX() + user.getWidth() >= enemy.getX() && user.getX() + user.getWidth() <= enemy.getX() + enemy.getWidth()){
+            if(user.getY() <= enemy.getY() + enemy.getHeight()
+                    && user.getY() >= enemy.getY()){
+                user.setAlive(false);
+            }
+        }
+        else {
+        }
     }
     
     

@@ -20,6 +20,7 @@ public class User extends MovingThing{
     private int fSpeed;
     private Image image;
     private boolean alive;
+    private boolean falling = false;
     private int activeDirection = (int)Math.round((Math.random()*2)-1);
     
 
@@ -88,9 +89,11 @@ public class User extends MovingThing{
                 break;
             case "UP":
                 setY(getY() - getJSpeed());
+                falling = false;
                 break;
             case "DOWN":
                 setY(getY() + getFSpeed());
+                falling = true;
                 break;
         }
     }
@@ -105,6 +108,10 @@ public class User extends MovingThing{
     
     public void setAlive(boolean a){
         alive = a;
+    }
+    
+    public boolean isFalling(){
+        return falling;
     }
     
     public int getActiveDirection() {
